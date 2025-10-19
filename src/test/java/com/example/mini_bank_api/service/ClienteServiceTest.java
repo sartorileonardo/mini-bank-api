@@ -30,6 +30,8 @@ class ClienteServiceTest {
     @InjectMocks
     private ClienteService clienteService;
 
+    // ========== TESTES DE SUCESSO ==========
+
     @Test
     void deveCadastrarClienteComSucesso() {
         // Arrange
@@ -49,20 +51,6 @@ class ClienteServiceTest {
         assertEquals("12345", resultado.getNumeroConta());
         verify(clienteRepository).existsByNumeroConta("12345");
         verify(clienteRepository).save(cliente);
-    }
-
-    @Test
-    void deveLancarExcecaoQuandoNumeroContaJaExiste() {
-        // Arrange
-        Cliente cliente = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
-
-        when(clienteRepository.existsByNumeroConta("12345"))
-                .thenReturn(true);
-
-        // Act & Assert
-        assertThrows(ContaException.class,
-                () -> clienteService.cadastrarCliente(cliente));
-        verify(clienteRepository, never()).save(any(Cliente.class));
     }
 
     @Test
@@ -103,17 +91,6 @@ class ClienteServiceTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoBuscarPorIdNaoEncontrado() {
-        // Arrange
-        when(clienteRepository.findById(999L))
-                .thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(ClienteNotFoundException.class,
-                () -> clienteService.buscarPorId(999L));
-    }
-
-    @Test
     void deveBuscarClientePorNumeroConta() {
         // Arrange
         Cliente cliente = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
@@ -129,17 +106,6 @@ class ClienteServiceTest {
         assertEquals("João", resultado.getNome());
         assertEquals("12345", resultado.getNumeroConta());
         verify(clienteRepository).findByNumeroConta("12345");
-    }
-
-    @Test
-    void deveLancarExcecaoQuandoBuscarPorNumeroContaNaoEncontrado() {
-        // Arrange
-        when(clienteRepository.findByNumeroConta("99999"))
-                .thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(ClienteNotFoundException.class,
-                () -> clienteService.buscarPorNumeroConta("99999"));
     }
 
     @Test
@@ -161,16 +127,6 @@ class ClienteServiceTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoDepositarValorInvalido() {
-        // Act & Assert
-        assertThrows(ValorInvalidoException.class,
-                () -> clienteService.depositar("12345", new BigDecimal("0.00")));
-
-        assertThrows(ValorInvalidoException.class,
-                () -> clienteService.depositar("12345", new BigDecimal("-10.00")));
-    }
-
-    @Test
     void deveSacarComSucesso() {
         // Arrange
         Cliente cliente = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
@@ -186,6 +142,75 @@ class ClienteServiceTest {
         // Assert
         assertEquals(new BigDecimal("70.00"), resultado.getSaldo());
         verify(clienteRepository).save(cliente);
+    }
+
+    @Test
+    void deveTransferirComSucesso() {
+        // Arrange
+        Cliente origem = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
+        Cliente destino = new Cliente(321L, "Maria", "67890", "001", new BigDecimal("50.00"));
+
+        when(clienteRepository.findByNumeroConta("12345"))
+                .thenReturn(Optional.of(origem));
+        when(clienteRepository.findByNumeroConta("67890"))
+                .thenReturn(Optional.of(destino));
+        when(clienteRepository.save(any(Cliente.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        clienteService.transferir("12345", "67890", new BigDecimal("30.00"));
+
+        // Assert
+        assertEquals(new BigDecimal("70.00"), origem.getSaldo());
+        assertEquals(new BigDecimal("80.00"), destino.getSaldo());
+    }
+
+    // ========== TESTES DE ERRO ==========
+
+    @Test
+    void deveLancarExcecaoQuandoNumeroContaJaExiste() {
+        // Arrange
+        Cliente cliente = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
+
+        when(clienteRepository.existsByNumeroConta("12345"))
+                .thenReturn(true);
+
+        // Act & Assert
+        assertThrows(ContaException.class,
+                () -> clienteService.cadastrarCliente(cliente));
+        verify(clienteRepository, never()).save(any(Cliente.class));
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoBuscarPorIdNaoEncontrado() {
+        // Arrange
+        when(clienteRepository.findById(999L))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ClienteNotFoundException.class,
+                () -> clienteService.buscarPorId(999L));
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoBuscarPorNumeroContaNaoEncontrado() {
+        // Arrange
+        when(clienteRepository.findByNumeroConta("99999"))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ClienteNotFoundException.class,
+                () -> clienteService.buscarPorNumeroConta("99999"));
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoDepositarValorInvalido() {
+        // Act & Assert
+        assertThrows(ValorInvalidoException.class,
+                () -> clienteService.depositar("12345", new BigDecimal("0.00")));
+
+        assertThrows(ValorInvalidoException.class,
+                () -> clienteService.depositar("12345", new BigDecimal("-10.00")));
     }
 
     @Test
@@ -209,27 +234,6 @@ class ClienteServiceTest {
 
         assertThrows(ValorInvalidoException.class,
                 () -> clienteService.sacar("12345", new BigDecimal("-10.00")));
-    }
-
-    @Test
-    void deveTransferirComSucesso() {
-        // Arrange
-        Cliente origem = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
-        Cliente destino = new Cliente(321L, "Maria", "67890", "001", new BigDecimal("50.00"));
-
-        when(clienteRepository.findByNumeroConta("12345"))
-                .thenReturn(Optional.of(origem));
-        when(clienteRepository.findByNumeroConta("67890"))
-                .thenReturn(Optional.of(destino));
-        when(clienteRepository.save(any(Cliente.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Act
-        clienteService.transferir("12345", "67890", new BigDecimal("30.00"));
-
-        // Assert
-        assertEquals(new BigDecimal("70.00"), origem.getSaldo());
-        assertEquals(new BigDecimal("80.00"), destino.getSaldo());
     }
 
     @Test

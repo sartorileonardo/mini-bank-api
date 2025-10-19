@@ -2,9 +2,9 @@ package com.example.mini_bank_api.service;
 
 
 import com.example.mini_bank_api.entity.Cliente;
+import com.example.mini_bank_api.exception.ClienteNotFoundException;
 import com.example.mini_bank_api.exception.ContaException;
 import com.example.mini_bank_api.exception.SaldoInsuficienteException;
-import com.example.mini_bank_api.exception.ClienteNotFoundException;
 import com.example.mini_bank_api.exception.ValorInvalidoException;
 import com.example.mini_bank_api.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
