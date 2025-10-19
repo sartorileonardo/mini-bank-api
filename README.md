@@ -238,7 +238,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 **Leonardo Sartori**
 
 - GitHub: [@sartorileonardo](https://github.com/sartorileonardo)
-- LinkedIn: [Leonardo Sartori](https://linkedin.com/in/leonardosartori)
+- LinkedIn: [Leonardo Sartori](https://linkedin.com/in/sartorileonardo)
 
 ## 🙏 Agradecimentos
 
