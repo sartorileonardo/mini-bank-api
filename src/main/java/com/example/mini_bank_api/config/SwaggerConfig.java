@@ -18,9 +18,9 @@ public class SwaggerConfig {
                         .description("API REST completa para sistema bancário simplificado")
                         .version("v1.0.0")
                         .contact(new Contact()
-                                .name("João Developer")
-                                .email("joao@example.com")
-                                .url("https://github.com/joaodev"))
+                                .name("Leonardo Sartori")
+                                .email("sartorileonardo@example.com")
+                                .url("https://github.com/sartorileonardo"))
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://springdoc.org")));
