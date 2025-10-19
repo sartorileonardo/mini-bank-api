@@ -30,8 +30,7 @@ class ClienteServiceTest {
     @Test
     void deveDepositarComSucesso() {
         // Arrange
-        Cliente cliente = new Cliente("João", "12345", "001");
-        cliente.setSaldo(new BigDecimal("100.00"));
+        Cliente cliente = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
 
         when(clienteRepository.findByNumeroConta("12345"))
                 .thenReturn(Optional.of(cliente));
@@ -49,8 +48,7 @@ class ClienteServiceTest {
     @Test
     void deveLancarExcecaoQuandoSaldoInsuficiente() {
         // Arrange
-        Cliente cliente = new Cliente("Maria", "67890", "001");
-        cliente.setSaldo(new BigDecimal("50.00"));
+        Cliente cliente = new Cliente(321L, "Maria", "67890", "001", new BigDecimal("50.00"));
 
         when(clienteRepository.findByNumeroConta("67890"))
                 .thenReturn(Optional.of(cliente));
@@ -63,11 +61,9 @@ class ClienteServiceTest {
     @Test
     void deveTransferirComSucesso() {
         // Arrange
-        Cliente origem = new Cliente("João", "12345", "001");
-        origem.setSaldo(new BigDecimal("100.00"));
+        Cliente origem = new Cliente(123L, "João", "12345", "001", new BigDecimal("100.00"));
 
-        Cliente destino = new Cliente("Maria", "67890", "001");
-        destino.setSaldo(new BigDecimal("50.00"));
+        Cliente destino = new Cliente(321L, "Maria", "67890", "001", new BigDecimal("50.00"));
 
         when(clienteRepository.findByNumeroConta("12345"))
                 .thenReturn(Optional.of(origem));
