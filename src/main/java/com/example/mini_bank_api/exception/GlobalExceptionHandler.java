@@ -18,7 +18,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SaldoInsuficienteException.class)
-    public ResponseEntity<Object> handleSaldoInsuficiente(SaldoInsuficienteException ex) {
+    public ResponseEntity<Object> handleSaldoInsuficienteException(SaldoInsuficienteException ex) {
+        return createErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ContaException.class)
+    public ResponseEntity<Object> handleContaException(ContaException ex) {
         return createErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

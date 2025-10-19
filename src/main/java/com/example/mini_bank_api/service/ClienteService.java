@@ -2,6 +2,7 @@ package com.example.mini_bank_api.service;
 
 
 import com.example.mini_bank_api.entity.Cliente;
+import com.example.mini_bank_api.exception.ContaException;
 import com.example.mini_bank_api.exception.SaldoInsuficienteException;
 import com.example.mini_bank_api.exception.ClienteNotFoundException;
 import com.example.mini_bank_api.exception.ValorInvalidoException;
@@ -25,7 +26,7 @@ public class ClienteService {
     // Cadastrar cliente
     public Cliente cadastrarCliente(Cliente cliente) {
         if (clienteRepository.existsByNumeroConta(cliente.getNumeroConta())) {
-            throw new RuntimeException("Número da conta já existe");
+            throw new ContaException("Número da conta já existe");
         }
         return clienteRepository.save(cliente);
     }
