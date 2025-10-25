@@ -3,10 +3,9 @@ package com.example.mini_bank_api.service;
 
 import com.example.mini_bank_api.entity.Cliente;
 import com.example.mini_bank_api.exception.ClienteNotFoundException;
-import com.example.mini_bank_api.exception.ContaException;
-import com.example.mini_bank_api.exception.SaldoInsuficienteException;
-import com.example.mini_bank_api.exception.ValorInvalidoException;
 import com.example.mini_bank_api.repository.ClienteRepository;
+import com.example.mini_bank_api.validation.ClienteValidation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,20 +13,20 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    public ClienteService(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
-    }
+    private final ClienteValidation clienteValidation;
 
     // Cadastrar cliente
     public Cliente cadastrarCliente(Cliente cliente) {
-        if (clienteRepository.existsByNumeroConta(cliente.getNumeroConta())) {
-            throw new ContaException("Número da conta já existe");
-        }
+        clienteValidation.validarNumeroContaUnico(
+                clienteRepository.existsByNumeroConta(cliente.getNumeroConta())
+        );
+
         return clienteRepository.save(cliente);
     }
 
@@ -53,7 +52,7 @@ public class ClienteService {
 
     // Depositar
     public Cliente depositar(String numeroConta, BigDecimal valor) {
-        validarValorPositivo(valor);
+        clienteValidation.validarValorPositivo(valor);
 
         Cliente cliente = buscarPorNumeroConta(numeroConta);
         cliente.setSaldo(cliente.getSaldo().add(valor));
@@ -63,13 +62,11 @@ public class ClienteService {
 
     // Sacar
     public Cliente sacar(String numeroConta, BigDecimal valor) {
-        validarValorPositivo(valor);
+        clienteValidation.validarValorPositivo(valor);
 
         Cliente cliente = buscarPorNumeroConta(numeroConta);
 
-        if (cliente.getSaldo().compareTo(valor) < 0) {
-            throw new SaldoInsuficienteException("Saldo insuficiente");
-        }
+        clienteValidation.validarSaldoSuficiente(cliente.getSaldo(), valor);
 
         cliente.setSaldo(cliente.getSaldo().subtract(valor));
         return clienteRepository.save(cliente);
@@ -77,7 +74,7 @@ public class ClienteService {
 
     // Transferir
     public void transferir(String contaOrigem, String contaDestino, BigDecimal valor) {
-        validarValorPositivo(valor);
+        clienteValidation.validarValorPositivo(valor);
 
         // Sacar da conta origem
         Cliente origem = sacar(contaOrigem, valor);
@@ -86,10 +83,4 @@ public class ClienteService {
         depositar(contaDestino, valor);
     }
 
-    // Validação de valor positivo
-    private void validarValorPositivo(BigDecimal valor) {
-        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new ValorInvalidoException("Valor deve ser positivo");
-        }
-    }
 }
