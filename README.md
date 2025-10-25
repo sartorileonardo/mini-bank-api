@@ -98,11 +98,18 @@ mvn spring-boot:run
 
 ## 🧪 Testando a API
 
-### Via Swagger UI
-1. Acesse http://localhost:8080/swagger-ui.html
-2. Expanda os endpoints desejados
-3. Use "Try it out" para testar
+### 🚀 Testando a API via Swagger UI
 
+Após iniciar a aplicação, você pode testar os endpoints através do Swagger UI:
+
+1. Certifique-se de que a aplicação está rodando
+2. Acesse: http://localhost:8080/swagger-ui/index.html#/
+3. Você verá uma interface interativa com todos os endpoints disponíveis
+4. Clique em qualquer endpoint para expandir e ver os detalhes
+5. Use o botão "Try it out" para testar os endpoints diretamente pela interface
+6. Preencha os parâmetros necessários e execute as requisições
+
+O Swagger UI fornece documentação interativa e permite testar a API sem necessidade de ferramentas externas.
 ### Exemplo de Fluxo via cURL
 
 1. **Cadastrar cliente João:**
@@ -177,7 +184,9 @@ springdoc.swagger-ui.path=/swagger-ui.html
 
 ### Dependências Maven
 ```xml
+
 <dependencies>
+    <!-- Dependências geradas pelo Spring Initializr -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
@@ -187,47 +196,157 @@ springdoc.swagger-ui.path=/swagger-ui.html
         <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
     <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
         <scope>runtime</scope>
     </dependency>
     <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-devtools</artifactId>
+        <scope>runtime</scope>
+        <optional>true</optional>
+    </dependency>
+
+    <!-- Dependência atualizada para Swagger -->
+    <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>2.5.0</version>
+    </dependency>
+
+    <!-- Lombok -->
+    <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <optional>true</optional>
     </dependency>
+
+    <!-- Test -->
     <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        <version>2.3.0</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
     </dependency>
 </dependencies>
+
 ```
 
-## 🎓 Para Mentores e Educadores
+## 📚 Glossário para Pessoas Não Técnicas
 
-Este projeto é ideal para:
-- **Ensino de Spring Boot** - Cobre todos os conceitos fundamentais
-- **Mentorias técnicas** - Pode ser construído em ~1 hora
-- **Code reviews** - Estrutura limpa e organizada
-- **Entrevistas técnicas** - Demonstra conhecimento prático
+**API (Interface de Programação de Aplicações)**
+- Um "mensageiro" que permite que diferentes programas de computador conversem entre si
 
-### Roteiro de Mentoria Sugerido
-1. Configuração do projeto (5 min)
-2. Entidade e Repository (7 min)
-3. Service com regras de negócio (15 min)
-4. Controller e endpoints (8 min)
-5. Tratamento de exceções (5 min)
-6. Testes unitários (10 min)
-7. Testes manuais no Swagger (10 min)
+**Conta Bancária Digital**
+- Uma conta virtual onde você pode guardar e gerenciar seu dinheiro eletronicamente
 
-## 🤝 Contribuindo
+**Saldo**
+- O valor total de dinheiro disponível em uma conta bancária
 
-Contribuições são bem-vindas! Sinta-se à vontade para:
-- Reportar issues
-- Sugerir novas funcionalidades
-- Enviar pull requests
-- Melhorar documentação
+**Transação**
+- Qualquer operação que envolva dinheiro, como depósito, saque ou transferência
+
+**Depósito**
+- Adicionar dinheiro em uma conta bancária
+
+**Saque**
+- Retirar dinheiro de uma conta bancária
+
+**Transferência**
+- Enviar dinheiro de uma conta para outra
+
+**Titular da Conta**
+- A pessoa que é dona da conta bancária
+
+**Número da Conta**
+- Código único que identifica cada conta bancária
+
+**Extrato**
+- Lista de todas as transações realizadas em uma conta
+
+## 🔧 Glossário de Anotações Técnicas
+
+**@Entity**
+- Marca uma classe como uma tabela no banco de dados
+
+**@Id**
+- Indica que um campo é a chave primária (identificador único) da tabela
+
+**@GeneratedValue**
+- Configura como os IDs são gerados automaticamente
+
+**@Column**
+- Define propriedades específicas para uma coluna do banco de dados
+
+**@RestController**
+- Marca uma classe como controlador que processa requisições web
+
+**@RequestMapping**
+- Define a URL base para todas as operações de um controlador
+
+**@GetMapping / @PostMapping / @PutMapping / @DeleteMapping**
+- Especifica o tipo de operação HTTP (GET, POST, PUT, DELETE)
+
+**@RequestBody**
+- Indica que o parâmetro vem do corpo da requisição
+
+**@PathVariable**
+- Extrai valores da URL da requisição
+
+**@Service**
+- Marca uma classe como serviço que contém regras de negócio
+
+**@Autowired**
+- Injeta automaticamente dependências entre classes
+
+## 📦 Glossário de Bibliotecas Utilizadas
+
+**Spring Boot**
+- Framework principal para criar aplicações web em Java
+
+**Spring Data JPA**
+- Facilita a integração com bancos de dados relacionais
+
+**H2 Database**
+- Banco de dados em memória para desenvolvimento e testes
+
+**SpringDoc OpenAPI**
+- Gera documentação automática da API
+
+**Lombok**
+- Reduz código boilerplate com anotações automáticas
+
+**JUnit**
+- Framework para escrever testes automatizados
+
+**Mockito**
+- Biblioteca para criar objetos de simulação em testes
+
+**Maven**
+- Ferramenta para gerenciar dependências e build do projeto
+
+## 🏗️ Glossário de Tipos de Classe
+
+**Entity Classes**
+- Representam tabelas do banco de dados (ex: Account, Transaction)
+
+**Controller Classes**
+- Gerenciam requisições HTTP e respostas da API
+
+**Service Classes**
+- Contêm a lógica de negócio da aplicação
+
+**Repository Interfaces**
+- Fornecem operações de acesso a dados
+
+**DTO (Data Transfer Object)**
+- Objetos para transferir dados entre camadas
+
+**Exception Classes**
+- Tratam erros e exceções específicas da aplicação
 
 ## 📄 Licença
 
